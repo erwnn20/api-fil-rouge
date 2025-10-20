@@ -1,0 +1,8 @@
+﻿/.idea/
+
+/node_modules/
+.env
+/dist/
+
+/prisma/*
+!/prisma/schema.prisma
