@@ -23,6 +23,10 @@ export const register =
                     lastname: data.lastname,
                     password: pwd.hash(data.password),
                 },
+                select: {
+                    id: true,
+                    username: true,
+                }
             });
 
             const tokens = await jwt.generate(user.id);
@@ -33,9 +37,8 @@ export const register =
                 sameSite: 'strict',
                 maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
             }).json({
-                message: 'User registered successfully',
+                message: `User \`${user.username}\` registered successfully`,
                 accessToken: tokens.access,
-                user
             });
         } catch (error) {
             next(error);
@@ -49,6 +52,11 @@ export const login =
             const users = await db.user.findMany({
                 where: {
                     OR: [{username: login}, {email: login}],
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    password: true,
                 }
             });
 
@@ -72,56 +80,58 @@ export const login =
                 sameSite: 'strict',
                 maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
             }).json({
-                message: 'User logged in successfully!',
+                message: `User \`${user.username}\` logged in successfully`,
                 accessToken: tokens.access,
-                user
             });
         } catch (error) {
             next(error);
         }
     };
 
-export const logout = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const {refreshToken} = req.cookies;
+export const logout =
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const {refreshToken} = req.cookies;
 
-        if (refreshToken) {
-            await db.jwtRefreshToken.delete({
-                where: {token: refreshToken},
-            });
-
-            res.clearCookie('refreshToken')
-                .json({
-                    message: 'User logged out successfully!',
+            if (refreshToken) {
+                await db.jwtRefreshToken.delete({
+                    where: {token: refreshToken},
                 });
+
+                res.clearCookie('refreshToken')
+                    .json({
+                        message: 'User logged out successfully',
+                    });
+            }
+        } catch (error) {
+            next(error);
         }
-    } catch (error) {
-        next(error);
-    }
-};
+    };
 
-export const refresh = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const data = req.body;
-        const tokens: jwt.Tokens = data.tokens;
-        await jwt.refresh(tokens);
+export const refresh =
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const data = req.body;
+            const tokens: jwt.Tokens = data.tokens;
+            await jwt.refresh(tokens);
 
-        res.json({
-            message: 'Token refreshed successfully',
-        });
-    } catch (error) {
-        next(error);
-    }
-};
+            res.json({
+                message: 'Token refreshed successfully',
+            });
+        } catch (error) {
+            next(error);
+        }
+    };
 
-export const passwordReset = async (req: Request, res: Response, next: NextFunction) => {
-    try {
+export const passwordReset =
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
 
-        return res.status(501).json({
-            error: 'Not implemented',
-        })
-        // res.json({message: '',});
-    } catch (error) {
-        next(error);
-    }
-};
+            return res.status(501).json({
+                error: 'Not implemented',
+            })
+            // res.json({message: '',});
+        } catch (error) {
+            next(error);
+        }
+    };
