@@ -4,7 +4,6 @@ import * as jwt from '../utils/jwt.utils';
 export const auth =
     (req: Request, res: Response, next: NextFunction) => {
         try {
-
             const authHeader = req.header('authorization');
             if (!authHeader || !authHeader.startsWith('Bearer '))
                 return res.status(401).json({error: 'Missing access token'});
@@ -13,11 +12,11 @@ export const auth =
 
             try {
                 (req as any).user = jwt.verify(accessToken);
-                return next();
             } catch (err: any) {
                 if (err.name !== "TokenExpiredError")
-                    return res.status(403).json({message: "Token invalide"});
+                    return res.status(403).json({message: "Invalid token"});
             }
+            return next();
 
             // regen access via refresh token ?
         } catch (error) {
