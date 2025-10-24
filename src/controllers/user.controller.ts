@@ -1,12 +1,10 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
-import {PrismaClient} from '@prisma/client';
-
-const prisma = new PrismaClient()
+import db from "../config/db";
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.body;
-        const user = await prisma.user.create({
+        const user = await db.user.create({
             data: {
                 firstname: data.firstname,
                 lastname: data.lastname,
@@ -28,7 +26,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.query;
-        const users = await prisma.user.findMany({
+        const users = await db.user.findMany({
             where: {
                 id: req.params.id ? Number(req.params.id) : undefined,
                 firstname: data.firstname as string | undefined,
@@ -52,7 +50,7 @@ export const getUsers = async (req: Request, res: Response, next: NextFunction) 
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const data = req.body;
-        const user = await prisma.user.update({
+        const user = await db.user.update({
             where: {
                 id: req.params.id ? Number(req.params.id) : undefined,
             },
@@ -81,7 +79,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
 
 export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await prisma.user.delete({
+        await db.user.delete({
             where: {
                 id: req.params.id ? Number(req.params.id) : undefined
             },

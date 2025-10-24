@@ -1,11 +1,10 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
-import {PrismaClient} from '@prisma/client';
 import bcrypt from 'bcrypt';
 import * as jwt from '../utils/jwt.utils';
 import ms from "ms";
+import db from "../config/db";
 
 
-const prisma = new PrismaClient();
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 export const register =
@@ -13,12 +12,12 @@ export const register =
         try {
             const data = req.body;
 
-            if ((await prisma.user.count({where: {email: data.email}})) > 0)
+            if ((await db.user.count({where: {email: data.email}})) > 0)
                 return res.status(401).json({error: 'Email already used'});
-            if ((await prisma.user.count({where: {username: data.username}})) > 0)
+            if ((await db.user.count({where: {username: data.username}})) > 0)
                 return res.status(401).json({error: 'Username already used'});
 
-            const user = await prisma.user.create({
+            const user = await db.user.create({
                 data: {
                     username: data.username,
                     email: data.email,
@@ -36,7 +35,7 @@ export const register =
                 sameSite: 'strict',
                 maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
             }).json({
-                message: 'User registered successfully!',
+                message: 'User registered successfully',
                 accessToken: tokens.access,
                 user
             });
@@ -49,7 +48,7 @@ export const login =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const {login, password} = req.body;
-            const users = await prisma.user.findMany({
+            const users = await db.user.findMany({
                 where: {
                     OR: [{username: login}, {email: login}],
                 }
@@ -89,7 +88,7 @@ export const logout = async (req: Request, res: Response, next: NextFunction) =>
         const {refreshToken} = req.cookies;
 
         if (refreshToken) {
-            await prisma.jwtRefreshToken.delete({
+            await db.jwtRefreshToken.delete({
                 where: {token: refreshToken},
             });
 

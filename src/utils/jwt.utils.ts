@@ -1,8 +1,7 @@
 ﻿import jwt from 'jsonwebtoken';
 import ms from "ms";
-import {PrismaClient} from "@prisma/client";
+import db from "../config/db";
 
-const prisma = new PrismaClient();
 const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || '';
 export const JWT_ACCESS_EXPIRE = (process.env.JWT_ACCESS_EXPIRE || '') as ms.StringValue;
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || '';
@@ -28,7 +27,7 @@ export const generate = async (userId: number): Promise<Tokens> => {
         {expiresIn: JWT_REFRESH_EXPIRE}
     );
 
-    await prisma.jwtRefreshToken.create({
+    await db.jwtRefreshToken.create({
         data: {
             token: refreshToken,
             userId: userId,
@@ -43,7 +42,7 @@ export const generate = async (userId: number): Promise<Tokens> => {
 };
 
 export const refresh = async (tokens: Tokens) => {
-    await prisma.jwtRefreshToken.update({
+    await db.jwtRefreshToken.update({
         where: {token: tokens.refresh},
         data: {expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE))}
     });
