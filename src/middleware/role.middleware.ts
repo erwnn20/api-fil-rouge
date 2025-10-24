@@ -1,7 +1,8 @@
 ﻿import type {NextFunction, Request, Response} from "express";
 import db from "../config/db";
+import {Role} from "@prisma/client";
 
-export const admin =
+export const required = (role: Role) =>
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const userId = (req as any).user;
@@ -9,10 +10,10 @@ export const admin =
                 where: {id: userId},
                 select: {role: true}
             })
-            if (user?.role === 'ADMIN') return next();
+            if (user?.role === role) return next();
 
             return res.status(403).json({
-                error: 'ADMIN role required',
+                error: `${role} role required`,
             });
 
         } catch (error) {
