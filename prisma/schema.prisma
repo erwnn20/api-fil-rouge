@@ -21,11 +21,24 @@ model User {
   created_at DateTime @default(now())
 
   JwtRefreshToken JwtRefreshToken[]
+  BansReceived    Ban[]             @relation("UserBans")
+  BansGiven       Ban[]             @relation("AdminBans")
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+model Ban {
+  id      Int       @id @default(autoincrement())
+  userId  Int
+  user    User      @relation("UserBans", fields: [userId], references: [id], onDelete: Cascade)
+  adminId Int?
+  admin   User?     @relation("AdminBans", fields: [adminId], references: [id], onDelete: SetNull)
+  startAt DateTime @default(now())
+  endAt   DateTime?
+  reason  String
 }
 
 model JwtRefreshToken {
