@@ -48,3 +48,6 @@ export const refresh = async (tokens: Tokens) => {
         data: {expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE))}
     });
 }
+
+export const verify =
+    (accessTokens: Token) => jwt.verify(accessTokens, JWT_ACCESS_SECRET);

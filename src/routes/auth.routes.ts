@@ -1,12 +1,13 @@
 ﻿import {Router} from "express";
 import {register, login, logout, passwordReset, refresh} from "../controllers/auth.controller";
+import * as middleware from "../middleware/auth.middleware";
 
 const authRoutes = Router();
 
-authRoutes.post('/register', register);
-authRoutes.post('/login', login);
-authRoutes.post('/logout', logout);
-authRoutes.post('/refresh', refresh);
+authRoutes.post('/register', middleware.guest, register);
+authRoutes.post('/login', middleware.guest, login);
+authRoutes.post('/logout', middleware.auth, logout);
+authRoutes.post('/refresh', middleware.auth, refresh);
 authRoutes.post('/password-reset', passwordReset);
 
 export default authRoutes;
