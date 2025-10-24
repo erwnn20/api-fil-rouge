@@ -1,4 +1,5 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
+import * as pwd from "../utils/password.utils";
 import db from "../config/db";
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -10,7 +11,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
                 lastname: data.lastname,
                 username: data.username,
                 email: data.email,
-                password: data.password,
+                password: pwd.hash(data.password),
             },
         });
 

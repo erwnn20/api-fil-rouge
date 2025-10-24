@@ -1,11 +1,9 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
-import bcrypt from 'bcrypt';
 import * as jwt from '../utils/jwt.utils';
+import * as pwd from '../utils/password.utils';
 import ms from "ms";
 import db from "../config/db";
 
-
-const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 export const register =
     async (req: Request, res: Response, next: NextFunction) => {
@@ -23,7 +21,7 @@ export const register =
                     email: data.email,
                     firstname: data.firstname,
                     lastname: data.lastname,
-                    password: await bcrypt.hash(data.password, BCRYPT_ROUNDS),
+                    password: pwd.hash(data.password),
                 },
             });
 
@@ -63,7 +61,7 @@ export const login =
                 })
             const user = users[0];
 
-            const match = await bcrypt.compare(password, user.password);
+            const match = pwd.compare(password, user.password);
             if (!match) return res.status(401).json({error: 'Invalid password'});
 
             const tokens = await jwt.generate(user.id);
