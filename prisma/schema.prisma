@@ -17,15 +17,21 @@ model User {
   firstname  String?
   lastname   String
   password   String
+  role       Role     @default(USER)
   created_at DateTime @default(now())
 
   JwtRefreshToken JwtRefreshToken[]
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model JwtRefreshToken {
   id        Int      @id @default(autoincrement())
   token     String   @unique
-  userId    Int
+  userId    Int      @unique
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
 }
