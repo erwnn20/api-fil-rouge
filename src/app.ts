@@ -1,12 +1,14 @@
 ﻿import express from 'express';
-import userRoutes from "./routes/user.routes";
+import AuthRoutes from "./routes/auth.routes";
+import UserRoutes from "./routes/user.routes";
 
 const app = express();
 
 app.use(express.json());
 
 // Routes
-app.use('/api/v1/users', userRoutes);
+app.use('/auth', AuthRoutes);
+app.use('/api/v1/users', UserRoutes);
 
 // Global error handler (should be after routes)
 // app.use(errorHandler);
