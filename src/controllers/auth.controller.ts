@@ -52,6 +52,7 @@ export const register =
 export const login =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const now = new Date();
             const {login, password} = req.body;
             const users = await db.user.findMany({
                 where: {
@@ -61,6 +62,19 @@ export const login =
                     id: true,
                     username: true,
                     password: true,
+                    BansReceived: {
+                        where: {
+                            startAt: {lte: now},
+                            OR: [
+                                {endAt: {gt: now}},
+                                {endAt: null},
+                            ],
+                        },
+                        select: {
+                            endAt: true,
+                            reason: true,
+                        }
+                    },
                 }
             });
 
@@ -70,11 +84,17 @@ export const login =
                     details: users.length > 1
                         ? 'Multiple users have this login information'
                         : 'No user with this login information',
-                })
+                });
             const user = users[0];
 
             const match = pwd.compare(password, user.password);
             if (!match) return res.status(401).json({error: 'Invalid password'});
+
+            if (user.BansReceived.length > 0)
+                return res.status(401).json({
+                    error: 'User currently banned',
+                    bans: user.BansReceived,
+                });
 
             const tokens = await jwt.generate(user.id);
 
@@ -143,11 +163,9 @@ export const refresh =
 export const passwordReset =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-
             return res.status(501).json({
                 error: 'Not implemented',
             })
-            // res.json({message: '',});
         } catch (error) {
             next(error);
         }

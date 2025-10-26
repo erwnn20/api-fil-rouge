@@ -1,8 +1,10 @@
 ﻿import type {NextFunction, Request, Response} from "express";
 import * as jwt from '../utils/jwt.utils';
+import db from "../config/db";
+
 
 export const auth =
-    (req: Request, res: Response, next: NextFunction) => {
+    async (req: Request, res: Response, next: NextFunction) => {
         try {
             const authHeader = req.header('authorization');
             if (!authHeader || !authHeader.startsWith('Bearer '))
@@ -13,9 +15,39 @@ export const auth =
             try {
                 (req as any).user = jwt.verify(accessToken);
             } catch (err: any) {
-                if (err.name !== "TokenExpiredError")
-                    return res.status(403).json({message: "Invalid token"});
+                    return res.status(403).json({
+                        error: err.name === 'TokenExpiredError'
+                            ? 'Token expired'
+                            : 'Invalid token',
+                    });
             }
+
+            const now = new Date();
+            const user = await db.user.findFirstOrThrow({
+                where: {id: (req as any).user.id},
+                select: {
+                    BansReceived: {
+                        where: {
+                            startAt: {lte: now},
+                            OR: [
+                                { endAt: { gt: now } },
+                                { endAt: null },
+                            ],
+                        },
+                        select: {
+                            endAt: true,
+                            reason: true,
+                        }
+                    },
+                }
+            })
+
+            if (user.BansReceived.length > 0)
+                return res.status(401).json({
+                    error: 'User logged in currently banned',
+                    bans: user.BansReceived,
+                });
+
             return next();
 
             // regen access via refresh token ?
