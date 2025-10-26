@@ -133,6 +133,7 @@ export const refresh =
                 }
             ).json({
                 message: 'Token refreshed successfully',
+                accessToken: newTokens.access,
             });
         } catch (error) {
             next(error);

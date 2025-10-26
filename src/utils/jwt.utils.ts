@@ -14,38 +14,52 @@ export interface Tokens {
     refresh: string;
 }
 
-export const generate = async (userId: number): Promise<Tokens> => {
-    const accessToken = jwt.sign(
-        {id: userId},
-        JWT_ACCESS_SECRET,
-        {expiresIn: JWT_ACCESS_EXPIRE}
-    );
+const generateTokens = (userId: number): Tokens => {
+    return {
+        access: jwt.sign(
+            {id: userId},
+            JWT_ACCESS_SECRET,
+            {expiresIn: JWT_ACCESS_EXPIRE}
+        ),
+        refresh: jwt.sign(
+            {id: userId},
+            JWT_REFRESH_SECRET,
+            {expiresIn: JWT_REFRESH_EXPIRE}
+        ),
+    }
+}
 
-    const refreshToken = jwt.sign(
-        {id: userId},
-        JWT_REFRESH_SECRET,
-        {expiresIn: JWT_REFRESH_EXPIRE}
-    );
+export const generate = async (userId: number): Promise<Tokens> => {
+    const tokens = generateTokens(userId);
 
     await db.jwtRefreshToken.create({
         data: {
-            token: refreshToken,
+            token: tokens.refresh,
             userId: userId,
             expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE)),
         },
     });
 
-    return {
-        access: accessToken,
-        refresh: refreshToken,
-    };
+    return tokens;
 };
 
-export const refresh = async (tokens: Tokens) => {
-    await db.jwtRefreshToken.update({
-        where: {token: tokens.refresh},
-        data: {expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE))}
+export const refresh = async (refreshToken: Token): Promise<Tokens> => {
+    const token = await db.jwtRefreshToken.findUniqueOrThrow({
+        where: {token: refreshToken},
+        select: {userId: true},
     });
+
+    const newTokens = generateTokens(token.userId);
+
+    await db.jwtRefreshToken.update({
+        where: {token: refreshToken},
+        data: {
+            token: newTokens.refresh,
+            expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE))
+        }
+    });
+
+    return newTokens;
 }
 
 export const verify =
