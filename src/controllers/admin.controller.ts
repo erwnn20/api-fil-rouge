@@ -65,7 +65,10 @@ export const unban =
                 where: {
                     user: {username: data.username},
                     startAt: {lte: now},
-                    endAt: {gt: now},
+                    OR: [
+                        { endAt: { gt: now } },
+                        { endAt: null },
+                    ],
                 },
                 data: {
                     endAt: new Date()
