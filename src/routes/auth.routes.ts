@@ -6,8 +6,8 @@ const authRoutes = Router();
 
 authRoutes.post('/register', middleware.guest, register);
 authRoutes.post('/login', middleware.guest, login);
-authRoutes.post('/logout', middleware.auth, logout);
-authRoutes.post('/refresh', middleware.auth, refresh);
+authRoutes.post('/logout', middleware.logged, logout);
+authRoutes.post('/refresh', middleware.logged, refresh);
 authRoutes.post('/password-reset', passwordReset);
 
 export default authRoutes;

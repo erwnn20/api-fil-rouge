@@ -75,3 +75,17 @@ export const guest =
             next(error);
         }
     }
+
+export const logged =
+    async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const refreshToken: jwt.Token = req.cookies.refreshToken;
+
+            if (!refreshToken)
+                return res.status(401).json({error: 'Missing refresh token'});
+
+            return next();
+        } catch (error) {
+            next(error);
+        }
+    }
