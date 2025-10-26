@@ -31,12 +31,16 @@ export const register =
 
             const tokens = await jwt.generate(user.id);
 
-            res.cookie('refreshToken', tokens.refresh, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'strict',
-                maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
-            }).json({
+            res.cookie(
+                'refreshToken',
+                tokens.refresh,
+                {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                    maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                }
+            ).json({
                 message: `User \`${user.username}\` registered successfully`,
                 accessToken: tokens.access,
             });
@@ -74,12 +78,16 @@ export const login =
 
             const tokens = await jwt.generate(user.id);
 
-            res.cookie('refreshToken', tokens.refresh, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'strict',
-                maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
-            }).json({
+            res.cookie(
+                'refreshToken',
+                tokens.refresh,
+                {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                    maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                }
+            ).json({
                 message: `User \`${user.username}\` logged in successfully`,
                 accessToken: tokens.access,
             });
@@ -111,11 +119,19 @@ export const logout =
 export const refresh =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data = req.body;
-            const tokens: jwt.Tokens = data.tokens;
-            await jwt.refresh(tokens);
+            const refreshToken: jwt.Token = req.cookies.refreshToken;
+            const newTokens = await jwt.refresh(refreshToken);
 
-            res.json({
+            res.cookie(
+                'refreshToken',
+                newTokens.refresh,
+                {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'strict',
+                    maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                }
+            ).json({
                 message: 'Token refreshed successfully',
             });
         } catch (error) {
