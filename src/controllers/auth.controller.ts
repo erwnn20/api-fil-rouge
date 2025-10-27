@@ -31,16 +31,17 @@ export const register =
 
             const tokens = await jwt.generate(user.id);
 
-            res.cookie(
-                'refreshToken',
-                tokens.refresh,
-                {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'strict',
-                    maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
-                }
-            ).json({
+            res.status(201)
+                .cookie(
+                    'refreshToken',
+                    tokens.refresh,
+                    {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: 'strict',
+                        maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                    }
+                ).json({
                 message: `User \`${user.username}\` registered successfully`,
                 accessToken: tokens.access,
             });
@@ -79,26 +80,30 @@ export const login =
             });
 
             if (users.length !== 1)
-                return res.status(401).json({
-                    error: 'Invalid credentials',
-                    details: users.length > 1
-                        ? 'Multiple users have this login information'
-                        : 'No user with this login information',
-                });
+                return users.length > 1
+                    ? res.status(409).json({
+                        error: 'Invalid credentials',
+                        details: 'Multiple users have this login information'
+                    })
+                    : res.status(404).json({
+                        error: 'Invalid credentials',
+                        details: 'No user with this login information',
+                    });
             const user = users[0];
 
             const match = pwd.compare(password, user.password);
             if (!match) return res.status(401).json({error: 'Invalid password'});
 
             if (user.BansReceived.length > 0)
-                return res.status(401).json({
+                return res.status(403).json({
                     error: 'User currently banned',
                     bans: user.BansReceived,
                 });
 
             const tokens = await jwt.generate(user.id);
 
-            res.cookie(
+            res.status(200)
+                .cookie(
                 'refreshToken',
                 tokens.refresh,
                 {
@@ -126,7 +131,8 @@ export const logout =
                     where: {token: refreshToken},
                 });
 
-                res.clearCookie('refreshToken')
+                res.status(200)
+                    .clearCookie('refreshToken')
                     .json({
                         message: 'User logged out successfully',
                     });
@@ -142,7 +148,8 @@ export const refresh =
             const refreshToken: jwt.Token = req.cookies.refreshToken;
             const newTokens = await jwt.refresh(refreshToken);
 
-            res.cookie(
+            res.status(200)
+                .cookie(
                 'refreshToken',
                 newTokens.refresh,
                 {

@@ -23,9 +23,10 @@ export const createUser =
                 }
             });
 
-            res.json({
-                message: `User \`${user.username}\` created successfully`, user,
-            });
+            res.status(201)
+                .json({
+                    message: `User \`${user.username}\` created successfully`, user,
+                });
         } catch (error) {
             next(error);
         }
@@ -42,17 +43,23 @@ export const getUsers =
                     lastname: data.lastname as string | undefined,
                     username: data.username as string | undefined,
                     email: data.email as string | undefined,
-                    // created_at: Date,
                 },
                 omit: {
                     password: true
                 }
             });
 
-            res.json({
-                message: users.length === 0 ? 'No user found' : `${users.length} users found`,
-                users, count: users.length,
-            });
+            return users.length > 0
+                ? res.status(200)
+                    .json({
+                        message: `${users.length} users found`,
+                        users, count: users.length,
+                    })
+                : res.status(204)
+                    .json({
+                        message: 'No user found',
+                        users, count: users.length,
+                    });
         } catch (error) {
             next(error);
         }
@@ -77,15 +84,16 @@ export const updateUser =
                 }
             })
 
-            res.json({
-                message: `User \`${user.username}\` updated successfully`, user,
-                updated: {
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    username: data.username,
-                    email: data.email,
-                },
-            });
+            res.status(200)
+                .json({
+                    message: `User \`${user.username}\` updated successfully`, user,
+                    updated: {
+                        firstname: data.firstname,
+                        lastname: data.lastname,
+                        username: data.username,
+                        email: data.email,
+                    },
+                });
         } catch (error) {
             next(error);
         }
@@ -103,7 +111,8 @@ export const deleteUser =
                 }
             });
 
-            res.json({
+            res.status(200)
+                .json({
                 message: `User \`${user.username}\` deleted successfully`,
             });
         } catch (error) {

@@ -8,14 +8,14 @@ export const auth =
         try {
             const authHeader = req.header('authorization');
             if (!authHeader || !authHeader.startsWith('Bearer '))
-                return res.status(401).json({error: 'Missing access token'});
+                return res.status(404).json({error: 'Missing access token'});
 
             const accessToken = authHeader.split(' ')[1];
 
             try {
                 (req as any).user = jwt.verify(accessToken);
             } catch (err: any) {
-                    return res.status(403).json({
+                    return res.status(401).json({
                         error: err.name === 'TokenExpiredError'
                             ? 'Token expired'
                             : 'Invalid token',
@@ -43,7 +43,7 @@ export const auth =
             })
 
             if (user.BansReceived.length > 0)
-                return res.status(401).json({
+                return res.status(403).json({
                     error: 'User logged in currently banned',
                     bans: user.BansReceived,
                 });
@@ -66,7 +66,7 @@ export const guest =
 
             try {
                 jwt.verify(accessToken);
-                return res.status(403).json({error: 'Already logged in'});
+                return res.status(409).json({error: 'Already logged in'});
             } catch {
                 return next();
             }
@@ -82,7 +82,7 @@ export const logged =
             const refreshToken: jwt.Token = req.cookies.refreshToken;
 
             if (!refreshToken)
-                return res.status(401).json({error: 'Missing refresh token'});
+                return res.status(404).json({error: 'Missing refresh token'});
 
             return next();
         } catch (error) {

@@ -2,6 +2,7 @@
 import db from "../config/db";
 import ms from "ms";
 
+
 interface Ban {
     username: string;
     adminName: string;
@@ -46,7 +47,8 @@ export const ban =
                 },
             });
 
-            res.json({
+            res.status(201)
+                .json({
                 message: `User \`${ban.user.username}\` was successfully banned`,
                 ban
             });
@@ -75,7 +77,8 @@ export const unban =
                 },
             });
 
-            res.json({
+            res.status(200)
+                .json({
                 message: result.count > 0
                     ? `User \`${data.username}\` was successfully unbanned`
                     : `User \`${data.username}\` isn't currently banned`,

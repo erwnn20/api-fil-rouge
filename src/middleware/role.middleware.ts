@@ -2,6 +2,7 @@
 import db from "../config/db";
 import {Role} from "@prisma/client";
 
+
 export const required = (role: Role) =>
     async (req: Request, res: Response, next: NextFunction) => {
         try {
