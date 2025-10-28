@@ -3,6 +3,7 @@ import {createUser, deleteUser, getUsers, updateUser} from "../controllers/user.
 import * as mwAuth from "../middleware/auth.middleware";
 import * as mwRole from "../middleware/role.middleware";
 
+
 const userRoutes = Router();
 
 userRoutes.get('/', mwAuth.auth, getUsers);

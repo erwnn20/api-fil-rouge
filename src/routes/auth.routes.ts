@@ -2,6 +2,7 @@
 import {register, login, logout, passwordReset, refresh} from "../controllers/auth.controller";
 import * as middleware from "../middleware/auth.middleware";
 
+
 const authRoutes = Router();
 
 authRoutes.post('/register', middleware.guest, register);
