@@ -3,7 +3,9 @@ import * as mwAuth from "../middleware/auth.middleware";
 import * as mwRole from "../middleware/role.middleware";
 import {ban, unban} from "../controllers/admin.controller";
 
-
+/**
+ * Regroups ADMIN features routes
+ */
 const adminRoutes = Router();
 
 adminRoutes.post('/ban', mwAuth.auth, mwRole.required("ADMIN"), ban);

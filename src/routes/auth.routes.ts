@@ -3,6 +3,9 @@ import {register, login, logout, passwordReset, refresh} from "../controllers/au
 import * as middleware from "../middleware/auth.middleware";
 
 
+/**
+ * Regroups Authentication features routes
+ */
 const authRoutes = Router();
 
 authRoutes.post('/register', middleware.guest, register);

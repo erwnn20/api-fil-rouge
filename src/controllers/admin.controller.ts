@@ -20,12 +20,14 @@ interface Ban {
 
 
 /**
+ * Create a new user ban. ADMIN role required.
+ *
  * @swagger
  * paths:
  *   /admin/ban:
  *     post:
  *       summary: Bannir un utilisateur
- *       description: Creer un nouveau bannisement d'utilisateur. Rôle ADMIN requis.
+ *       description: Creer un nouveau bannissement d'utilisateur. Rôle ADMIN requis.
  *       tags: [Admin]
  *       security:
  *         - bearerAuth: []        # avec verification de rôle (ADMIN)
@@ -72,8 +74,9 @@ export const ban =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data: Ban = req.body;
-            data.startAt = data.startAt || new Date();
+            data.startAt = data.startAt || new Date(); // sets the date at runtime if no 'startAt' date specified
 
+            // create the ban in the db
             const ban = await db.ban.create({
                 data: {
                     user: {
@@ -88,6 +91,7 @@ export const ban =
                         : undefined,
                     reason: data.reason,
                 },
+                // select the data retrieved from the db
                 select: {
                     user: {
                         select: {
@@ -116,12 +120,14 @@ export const ban =
 
 
 /**
+ * Ends all current bans on the user. Admin role required.
+ *
  * @swagger
  * paths:
  *   /admin/unban:
  *     post:
  *       summary: Débanni un utilisateur
- *       description:  Mets fin a tout les bannisement en cours de l'utilisateur. Rôle ADMIN requis.
+ *       description:  Mets fin a tout les bannissement en cours de l'utilisateur. Rôle ADMIN requis.
  *       tags: [Admin]
  *       security:
  *         - bearerAuth: []        # avec verification de rôle (ADMIN)
@@ -155,6 +161,7 @@ export const unban =
             const data: Ban = req.body;
             const now = new Date();
 
+            // set all the endAt of actives bans of the selected user to now
             const result = await db.ban.updateMany({
                 where: {
                     user: {username: data.username},
@@ -165,7 +172,7 @@ export const unban =
                     ],
                 },
                 data: {
-                    endAt: new Date()
+                    endAt: now
                 },
             });
 

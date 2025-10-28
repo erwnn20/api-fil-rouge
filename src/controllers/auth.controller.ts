@@ -14,12 +14,14 @@ import db from "../config/db";
 
 
 /**
+ * Log in a new user. Non-logged in user only.
+ *
  * @swagger
  * paths:
  *   /auth/register:
  *     post:
  *       summary: Enregistre un nouvel utilisateur
- *       description: Connect un nouvel utilisateur. Utilisateur non connectés seulement.
+ *       description: Connecte un nouvel utilisateur. Utilisateur non connectés seulement.
  *       tags: [Auth]
  *       requestBody:
  *         required: true
@@ -88,6 +90,7 @@ export const register =
             if ((await db.user.count({where: {username: data.username}})) > 0)
                 return res.status(401).json({error: 'Username already used'});
 
+            // create the user in the database
             const user = await db.user.create({
                 data: {
                     username: data.username,
@@ -126,6 +129,9 @@ export const register =
 
 
 /**
+ * Authenticates a user with their username or email and password.
+ * Non-logged in users only.
+ *
  * @swagger
  * paths:
  *   /auth/login:
@@ -229,10 +235,13 @@ export const login =
         try {
             const now = new Date();
             const {login, password} = req.body;
+
+            // finds all users with matching credentials
             const users = await db.user.findMany({
                 where: {
                     OR: [{username: login}, {email: login}],
                 },
+                // select the data retrieved from the db
                 select: {
                     id: true,
                     username: true,
@@ -268,6 +277,7 @@ export const login =
             const match = pwd.compare(password, user.password);
             if (!match) return res.status(401).json({error: 'Invalid password'});
 
+            // check if the user is banned
             if (user.BansReceived.length > 0)
                 return res.status(403).json({
                     error: 'User currently banned',
@@ -298,6 +308,8 @@ export const login =
 
 
 /**
+ * Logs out the currently authenticated user by removing their refresh token and clearing the cookie.
+ *
  * @swagger
  * paths:
  *   /auth/logout:
@@ -323,7 +335,8 @@ export const login =
 export const logout =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const {refreshToken} = req.cookies;
+            // get the refreshToken from cookies
+            const refreshToken: jwt.Token = req.cookies.refreshToken;
 
             if (refreshToken) {
                 await db.jwtRefreshToken.delete({
@@ -343,6 +356,8 @@ export const logout =
 
 
 /**
+ * Refreshes the access token from a refresh token.
+ *
  * @swagger
  * paths:
  *   /auth/refresh:
@@ -371,7 +386,10 @@ export const logout =
 export const refresh =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            // get the refreshToken from cookies
             const refreshToken: jwt.Token = req.cookies.refreshToken;
+
+            // get the new generated tokens
             const newTokens = await jwt.refresh(refreshToken);
 
             res.status(200)
@@ -393,6 +411,9 @@ export const refresh =
         }
     };
 
+/**
+ * not implemented yet
+ */
 export const passwordReset =
     async (req: Request, res: Response, next: NextFunction) => {
         try {

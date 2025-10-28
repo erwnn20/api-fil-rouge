@@ -14,6 +14,11 @@ export interface Tokens {
     refresh: string;
 }
 
+/**
+ * Generate an access and a refresh token for a user
+ *
+ * @param userId User ID for whom the tokens are
+ */
 const generateTokens = (userId: number): Tokens => {
     return {
         access: 'Bearer ' + jwt.sign(
@@ -29,6 +34,11 @@ const generateTokens = (userId: number): Tokens => {
     }
 }
 
+/**
+ * Generates new tokens. Saves the refresh token in the db.
+ *
+ * @param userId User ID for whom the tokens are
+ */
 export const generate = async (userId: number): Promise<Tokens> => {
     const tokens = generateTokens(userId);
 
@@ -43,6 +53,9 @@ export const generate = async (userId: number): Promise<Tokens> => {
     return tokens;
 };
 
+/**
+ * Updates tokens based on a user's refresh token passed as a parameter
+ */
 export const refresh = async (refreshToken: Token): Promise<Tokens> => {
     const token = await db.jwtRefreshToken.findUniqueOrThrow({
         where: {token: refreshToken},
@@ -62,5 +75,8 @@ export const refresh = async (refreshToken: Token): Promise<Tokens> => {
     return newTokens;
 }
 
+/**
+ * Verifies an access token
+ */
 export const verify =
     (accessTokens: Token) => jwt.verify(accessTokens, JWT_ACCESS_SECRET);

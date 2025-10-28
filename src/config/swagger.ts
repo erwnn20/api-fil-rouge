@@ -1,6 +1,10 @@
 ﻿import swaggerJsdoc from "swagger-jsdoc";
 import * as server from "../server"
 
+
+/**
+ * Swagger config options
+ */
 const options = {
     definition: {
         openapi: "3.0.0",

@@ -11,10 +11,15 @@ import {User as PrismaUser} from "@prisma/client";
  *   description: Gestion CRUD des utilisateurs
  */
 
+/**
+ * User type without password
+ */
 export type User = Omit<PrismaUser, "password">;
 
 
 /**
+ * Create a new user in the database. ADMIN role required.
+ *
  * @swagger
  * paths:
  *   /api/v1/users:
@@ -92,6 +97,8 @@ export const createUser =
 
 
 /**
+ * Returns all users matching the optional query filters.
+ *
  * @swagger
  * paths:
  *   /api/v1/users:
@@ -281,6 +288,8 @@ export const getUsers =
 
 
 /**
+ * Updates a user's information. ADMIN role required.
+ *
  * @swagger
  * paths:
  *   /api/v1/users/{id}:
@@ -384,6 +393,8 @@ export const updateUser =
 
 
 /**
+ * Delete a user by ID. ADMIN role required.
+ *
  * @swagger
  * paths:
  *   /api/v1/users/{id}:

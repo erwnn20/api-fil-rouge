@@ -3,13 +3,18 @@ import * as jwt from '../utils/jwt.utils';
 import db from "../config/db";
 
 
+/**
+ * Middleware: check that  the user is logged with a valid token
+ */
 export const auth =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            // get the full token form the header
             const authHeader = req.header('authorization');
             if (!authHeader || !authHeader.startsWith('Bearer '))
                 return res.status(404).json({error: 'Missing access token'});
 
+            // split to get the token
             const accessToken = authHeader.split(' ')[1];
 
             try {
@@ -42,6 +47,7 @@ export const auth =
                 }
             })
 
+            // check if the user is not banned
             if (user.BansReceived.length > 0)
                 return res.status(403).json({
                     error: 'User logged in currently banned',
@@ -56,6 +62,9 @@ export const auth =
         }
     }
 
+/**
+ * Middleware: check that the user is not logged
+ */
 export const guest =
     (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -76,6 +85,9 @@ export const guest =
         }
     }
 
+/**
+ * Middleware: check that  the user is logged. does not require a valid token.
+ */
 export const logged =
     async (req: Request, res: Response, next: NextFunction) => {
         try {

@@ -18,9 +18,8 @@ app.use('/admin', AdminRoutes);
 
 app.use('/api/v1/users', UserRoutes);
 
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
+// Route for Swagger
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
 
-// Global error handler (should be after routes)
-// app.use(errorHandler);
 
 export default app;

@@ -3,6 +3,11 @@ import db from "../config/db";
 import {Role} from "@prisma/client";
 
 
+/**
+ * Middleware: Check that the logged user has the correct Role
+ *
+ * @param {Role} role - The required user role (from Prisma enum)
+ */
 export const required = (role: Role) =>
     async (req: Request, res: Response, next: NextFunction) => {
         try {
