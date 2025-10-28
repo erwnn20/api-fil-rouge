@@ -16,7 +16,7 @@ export interface Tokens {
 
 const generateTokens = (userId: number): Tokens => {
     return {
-        access: jwt.sign(
+        access: 'Bearer ' + jwt.sign(
             {id: userId},
             JWT_ACCESS_SECRET,
             {expiresIn: JWT_ACCESS_EXPIRE}
