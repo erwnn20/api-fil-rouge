@@ -1,11 +1,11 @@
 ﻿import request from 'supertest';
-import * as jwt from '../src/utils/jwt.utils';
-import {dbMock} from "../src/config/singleton";
-import app from "../src/app";
-import db from "../src/config/db";
+import * as jwt from '../../src/utils/jwt.utils';
+import {dbMock} from "../../src/config/singleton";
+import app from "../../src/app";
+import db from "../../src/config/db";
 import {Role} from "@prisma/client";
 
-import * as middleware from '../src/middleware/middleware.tests'
+import * as middleware from '../../src/middleware/middleware.tests'
 
 
 const method = 'POST';
