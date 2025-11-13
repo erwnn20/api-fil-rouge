@@ -10,7 +10,7 @@ import ms from "ms";
  *   description: Gestion admin - ban / unban d'utilisateurs
  */
 
-interface Ban {
+export interface Ban {
     username: string;
     adminName: string;
     startAt?: Date;
