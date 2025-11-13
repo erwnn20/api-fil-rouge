@@ -74,7 +74,7 @@ export const ban =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data: Ban = req.body;
-            data.startAt = data.startAt || new Date(); // sets the date at runtime if no 'startAt' date specified
+            data.startAt = new Date(data.startAt ?? Date.now()); // sets the date at runtime if no 'startAt' date specified
 
             // create the ban in the db
             const ban = await db.ban.create({
@@ -87,7 +87,11 @@ export const ban =
                     },
                     startAt: data.startAt,
                     endAt: data.duration
-                        ? new Date(data.startAt.getTime() + (typeof data.duration === "number" ? data.duration : ms(data.duration)))
+                        ? new Date(
+                            data.startAt.getTime()
+                            + (typeof data.duration === "number"
+                                ? data.duration
+                                : ms(data.duration)))
                         : undefined,
                     reason: data.reason,
                 },
