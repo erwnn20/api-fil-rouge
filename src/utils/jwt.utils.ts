@@ -43,10 +43,15 @@ const generateTokens = (userId: number): Tokens => {
 export const generate = async (userId: number): Promise<Tokens> => {
     const tokens = generateTokens(userId);
 
-    await db.jwtRefreshToken.create({
-        data: {
+    await db.jwtRefreshToken.upsert({
+        where: {userId},
+        update: {
             token: tokens.refresh,
-            userId: userId,
+            expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE)),
+        },
+        create: {
+            userId,
+            token: tokens.refresh,
             expiresAt: new Date(Date.now() + ms(JWT_REFRESH_EXPIRE)),
         },
     });
