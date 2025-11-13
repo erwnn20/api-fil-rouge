@@ -404,10 +404,11 @@ export const refresh =
                         sameSite: 'strict',
                         maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
                     }
-                ).json({
-                message: 'Token refreshed successfully',
-                accessToken: newTokens.access,
-            });
+                )
+                .json({
+                    message: 'Token refreshed successfully',
+                    accessToken: newTokens.access,
+                });
         } catch (error) {
             next(error);
         }
