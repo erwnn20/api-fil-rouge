@@ -38,7 +38,6 @@ export const auth = (route: string) => {
         expect(response.body.error).toBe('User logged in currently banned');
     });
 }
-
 export const guest = (route: string) => {
     it('[guest.middleware] should return 409 if valid access token provided', async () => {
         const fakeUser = {id: 100};
@@ -51,6 +50,15 @@ export const guest = (route: string) => {
             .expect(409);
 
         expect(response.body.error).toBe('Already logged in');
+    });
+}
+export const logged = (route: string) => {
+    it('[logged.middleware] should return 404 if refreshToken cookie is missing', async () => {
+        const response = await request(app)
+            .post(route)
+            .expect(404);
+
+        expect(response.body.error).toBe('Missing refresh token');
     });
 }
 
