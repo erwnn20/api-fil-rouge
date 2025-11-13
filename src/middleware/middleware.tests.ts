@@ -27,7 +27,7 @@ export const auth = (route: string) => {
         const accessToken = jwt.generateTokens(fakeUser.id).access;
 
         dbMock.user.findFirstOrThrow.mockResolvedValue({
-            BansReceived: [{endAt: null, reason: 'Toxic behavior'}],
+            BansReceived: [{endAt: null, reason: 'Test ban'}],
         } as any);
 
         const response = await request(app)
