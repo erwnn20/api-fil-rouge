@@ -118,6 +118,7 @@ export const register =
                         maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
                     }
                 )
+                // .set('Authorization', tokens.access)
                 .json({
                     message: `User \`${user.username}\` registered successfully`,
                     accessToken: tokens.access,
@@ -297,6 +298,7 @@ export const login =
                         maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
                     }
                 )
+                // .set('Authorization', tokens.access)
                 .json({
                     message: `User \`${user.username}\` logged in successfully`,
                     accessToken: tokens.access,

@@ -20,11 +20,11 @@ export const auth =
             try {
                 (req as any).user = jwt.verify(accessToken);
             } catch (err: any) {
-                    return res.status(401).json({
-                        error: err.name === 'TokenExpiredError'
-                            ? 'Token expired'
-                            : 'Invalid token',
-                    });
+                return res.status(401).json({
+                    error: err.name === 'TokenExpiredError'
+                        ? 'Token expired'
+                        : 'Invalid token',
+                });
             }
 
             const now = new Date();
@@ -35,8 +35,8 @@ export const auth =
                         where: {
                             startAt: {lte: now},
                             OR: [
-                                { endAt: { gt: now } },
-                                { endAt: null },
+                                {endAt: {gt: now}},
+                                {endAt: null},
                             ],
                         },
                         select: {
@@ -45,7 +45,7 @@ export const auth =
                         }
                     },
                 }
-            })
+            });
 
             // check if the user is not banned
             if (user.BansReceived.length > 0)
@@ -55,8 +55,6 @@ export const auth =
                 });
 
             return next();
-
-            // regen access via refresh token ?
         } catch (error) {
             next(error);
         }

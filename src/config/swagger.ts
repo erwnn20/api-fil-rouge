@@ -1,5 +1,5 @@
 ﻿import swaggerJsdoc from "swagger-jsdoc";
-import * as server from "../server"
+import {url} from "./config";
 
 
 /**
@@ -52,7 +52,7 @@ const options = {
     },
     servers: [
         {
-            url: server.url,
+            url: url,
         },
     ],
     apis: ["./src/routes/*.ts", "./src/controllers/*.ts"],

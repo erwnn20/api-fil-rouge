@@ -15,4 +15,6 @@ const config: Config = {
     hostname: process.env.HOSTNAME || 'localhost',
 };
 
+export const url = `http://${config.hostname}:${config.port}`
+
 export default config;
