@@ -20,7 +20,7 @@ export interface Tokens {
  *
  * @param userId User ID for whom the tokens are
  */
-const generateTokens = (userId: number): Tokens => {
+export const generateTokens = (userId: number): Tokens => {
     return {
         access: 'Bearer ' + jwt.sign(
             {id: userId},
