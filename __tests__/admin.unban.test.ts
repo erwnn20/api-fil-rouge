@@ -48,9 +48,9 @@ describe(`${method} ${route}`, () => {
             .set('Authorization', accessToken)
             .send({
                 username: bannedUser.username,
-            });
+            })
+            .expect(200);
 
-        expect(response.status).toBe(200);
         expect(response.body.message).toBe(`User \`${bannedUser.username}\` was successfully unbanned`);
         expect(db.ban.updateMany).toHaveBeenCalledTimes(1);
     });

@@ -67,9 +67,9 @@ describe(`${method} ${route}`, () => {
         const response = await request(app)
             .post(route)
             .set('Authorization', accessToken)
-            .send(banBody);
+            .send(banBody)
+            .expect(201);
 
-        expect(response.status).toBe(201);
         expect(response.body.message).toBe(`User \`${bannedUser.username}\` was successfully banned`);
         expect(db.ban.create).toHaveBeenCalledTimes(1);
     });
