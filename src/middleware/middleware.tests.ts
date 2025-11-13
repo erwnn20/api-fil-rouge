@@ -39,6 +39,23 @@ export const auth = (route: string) => {
     });
 }
 
+export const guest = (route: string) => {
+    it('[guest.middleware] should return 409 if valid access token provided', async () => {
+        const fakeUser = {id: 100};
+
+        const accessToken = jwt.generateTokens(fakeUser.id).access;
+
+        const response = await request(app)
+            .post(route)
+            .set('Authorization', accessToken)
+            .expect(409);
+
+        expect(response.body.error).toBe('Already logged in');
+    });
+}
+
+
+// role middlewares
 export const role = (route: string, role: Role) => {
     it(`[role.middleware] should return 403 if user is not ${role}`, async () => {
         const fakeUser = {
