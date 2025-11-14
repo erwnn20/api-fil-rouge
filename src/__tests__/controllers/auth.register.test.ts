@@ -1,7 +1,7 @@
 ﻿import request from 'supertest';
 import * as jwt from '../../utils/jwt.utils';
 import * as pwd from '../../utils/password.utils';
-import {dbMock} from "../../config/singleton";
+import {dbMock} from "../setup/jest.setup";
 import app from "../../app";
 import db from "../../config/db";
 

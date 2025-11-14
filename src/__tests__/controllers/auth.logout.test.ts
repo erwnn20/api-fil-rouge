@@ -1,6 +1,6 @@
 ﻿import request from 'supertest';
 import * as jwt from '../../utils/jwt.utils';
-import {dbMock} from "../../config/singleton";
+import {dbMock} from "../setup/jest.setup";
 import app from "../../app";
 
 import * as middleware from '../../middleware/middleware.tests'
