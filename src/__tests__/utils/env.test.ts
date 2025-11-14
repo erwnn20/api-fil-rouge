@@ -1,4 +1,4 @@
-﻿import {getEnv} from '../../src/utils/env.utils';
+﻿import {getEnv} from '../../utils/env.utils';
 
 describe('.env Utils', () => {
     describe('getEnv', () => {

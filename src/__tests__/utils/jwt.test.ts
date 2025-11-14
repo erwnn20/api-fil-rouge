@@ -3,9 +3,9 @@
 dotenv.config();
 
 import jwt from "jsonwebtoken";
-import {dbMock} from "../../src/config/singleton";
-import * as jwToken from '../../src/utils/jwt.utils';
-import db from "../../src/config/db";
+import {dbMock} from "../../config/singleton";
+import * as jwToken from '../../utils/jwt.utils';
+import db from "../../config/db";
 
 
 

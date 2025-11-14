@@ -1,11 +1,11 @@
 ﻿import request from 'supertest';
-import * as jwt from '../../src/utils/jwt.utils';
-import * as pwd from '../../src/utils/password.utils';
-import {dbMock} from "../../src/config/singleton";
-import app from "../../src/app";
-import db from "../../src/config/db";
+import * as jwt from '../../utils/jwt.utils';
+import * as pwd from '../../utils/password.utils';
+import {dbMock} from "../../config/singleton";
+import app from "../../app";
+import db from "../../config/db";
 
-import * as middleware from '../../src/middleware/middleware.tests'
+import * as middleware from '../../middleware/middleware.tests'
 
 
 const method = 'POST';
