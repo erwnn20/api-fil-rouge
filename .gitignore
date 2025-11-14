@@ -1,9 +1,10 @@
 ﻿/.idea/
 /.instructions/
 
-/node_modules/
 .env
+/node_modules/
 /dist/
+/coverage/
 
 /prisma/*
 !/prisma/schema.prisma
