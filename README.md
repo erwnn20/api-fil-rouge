@@ -66,10 +66,8 @@ Tests réalisé avec Jest.
 
 # 🔐 Fonctionnalités principales
 
-- JWT access/refresh
-- Rotation sécurisée
-- Système de bannissement
-- Middlewares auth/rôle
-- Tests Jest
-- Prisma Mock
+- Authentification avec JWT access/refresh
+- Système de role utilisateur et de bannissement
+- CRUD sur les utilisateurs
 - Documentation Swagger
+- Tests Jest
