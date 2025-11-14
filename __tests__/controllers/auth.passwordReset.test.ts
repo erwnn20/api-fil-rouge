@@ -1,8 +1,5 @@
 ﻿import request from 'supertest';
-import * as jwt from '../../src/utils/jwt.utils';
 import app from "../../src/app";
-
-import * as middleware from '../../src/middleware/middleware.tests'
 
 
 const method = 'POST';
