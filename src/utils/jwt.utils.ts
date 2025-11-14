@@ -3,9 +3,9 @@ import ms from "ms";
 import db from "../config/db";
 import {getEnv} from "./env.utils";
 
-const JWT_ACCESS_SECRET = getEnv('JWT_ACCESS_SECRET');
+export const JWT_ACCESS_SECRET = getEnv('JWT_ACCESS_SECRET');
 export const JWT_ACCESS_EXPIRE = getEnv('JWT_ACCESS_EXPIRE') as ms.StringValue;
-const JWT_REFRESH_SECRET = getEnv('JWT_REFRESH_SECRET');
+export const JWT_REFRESH_SECRET = getEnv('JWT_REFRESH_SECRET');
 export const JWT_REFRESH_EXPIRE = getEnv('JWT_REFRESH_EXPIRE') as ms.StringValue;
 
 export type Token = string;
