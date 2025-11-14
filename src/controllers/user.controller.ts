@@ -1,7 +1,7 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
 import * as pwd from "../utils/password.utils";
 import db from "../config/db";
-import {User as PrismaUser} from "@prisma/client";
+import {Role, User as PrismaUser} from "@prisma/client";
 
 
 /**
@@ -229,6 +229,10 @@ export const createUser =
 export const getUsers =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const user = await db.user.findFirstOrThrow({
+                where: {id: (req as any).user.id},
+                select: {role: true}
+            });
             const data = req.query;
 
             const page: number = Number(data.page) || 1;
@@ -241,6 +245,7 @@ export const getUsers =
                 lastname: data.lastname as string | undefined,
                 username: data.username as string | undefined,
                 email: data.email as string | undefined,
+                role: user.role !== Role.ADMIN ? Role.USER : undefined,
             }
 
             const [users, total]: [User[], number] = await db.$transaction([
