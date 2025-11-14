@@ -165,29 +165,8 @@ export const createUser =
  *                   message:
  *                     type: string
  *                     example: "10 users found"
- *                   count:
- *                     type: integer
- *                     description: Nombre d'utilisateurs trouvés
- *                   users:
- *                     type: array
- *                     items:
- *                       $ref: '#/components/schemas/User'
- *         204:
- *           description: Aucun utilisateur trouvé
- *           content:
- *             application/json:
- *               schema:
- *                 type: object
- *                 properties:
- *                   message:
- *                     type: string
- *                     example: "No user found"
- *                   count:
- *                     type: integer
- *                     example: 0
- *                   users:
- *                     type: array
- *                     example: []
+ *                   paginate:
+ *                     $ref: '#/components/schemas/paginate'
  *
  *   /api/v1/users/{id}:
  *     get:
@@ -244,29 +223,8 @@ export const createUser =
  *                   message:
  *                     type: string
  *                     example: "10 users found"
- *                   count:
- *                     type: integer
- *                     description: Nombre d'utilisateurs trouvés
- *                   users:
- *                     type: array
- *                     items:
- *                       $ref: '#/components/schemas/User'
- *         204:
- *           description: Aucun utilisateur trouvé
- *           content:
- *             application/json:
- *               schema:
- *                 type: object
- *                 properties:
- *                   message:
- *                     type: string
- *                     example: "No user found"
- *                   count:
- *                     type: integer
- *                     example: 0
- *                   users:
- *                     type: array
- *                     example: []
+ *                   paginate:
+ *                     $ref: '#/components/schemas/paginate'
  */
 export const getUsers =
     async (req: Request, res: Response, next: NextFunction) => {
@@ -297,26 +255,20 @@ export const getUsers =
                 db.user.count({where: condition}),
             ]);
 
-            const paginate = {
-                page,
-                perPage: limit,
-                currentStartIndex: offset + 1,
-                count: users.length,
-                total,
-                data: users,
-            }
-
-            return paginate.count > 0
-                ? res.status(200)
-                    .json({
-                        message: `${paginate.count} users found`,
-                        paginate,
-                    })
-                : res.status(204)
-                    .json({
-                        message: 'No user found',
-                        paginate,
-                    });
+            return res.status(200)
+                .json({
+                    message: users.length > 0
+                        ? `${users.length} users found`
+                        : 'No user found',
+                    paginate: {
+                        page,
+                        perPage: limit,
+                        currentStartIndex: offset + 1,
+                        count: users.length,
+                        total,
+                        data: users,
+                    },
+                });
         } catch (error) {
             next(error);
         }

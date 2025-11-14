@@ -46,6 +46,21 @@ const options = {
                         user: {$ref: "#/components/schemas/User"},
                     },
                 },
+                paginate: {
+                    type: "object",
+                    properties: {
+                        page: {type: "integer", example: "1", description: "current page"},
+                        perPage: {type: "integer", example: "5", description: "number of elements per page"},
+                        currentStartIndex: {
+                            type: "integer",
+                            example: "6",
+                            description: "index of the first element of the current page in the total list"
+                        },
+                        count: {type: "integer", example: "4", description: "number of elements in the current page"},
+                        total: {type: "integer", example: "12", description: "total number of elements"},
+                        data: {type: "array", items: {$ref: "#/components/schemas/User"}},
+                    },
+                },
             },
         },
         security: [{bearerAuth: []}],
