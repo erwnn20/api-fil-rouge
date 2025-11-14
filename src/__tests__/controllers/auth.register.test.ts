@@ -5,7 +5,7 @@ import {dbMock} from "../setup/jest.setup";
 import app from "../../app";
 import db from "../../config/db";
 
-import * as middleware from '../../middleware/middleware.tests'
+import * as middleware from '../middleware.tests'
 
 
 const method = 'POST';

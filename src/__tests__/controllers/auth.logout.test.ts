@@ -3,7 +3,7 @@ import * as jwt from '../../utils/jwt.utils';
 import {dbMock} from "../setup/jest.setup";
 import app from "../../app";
 
-import * as middleware from '../../middleware/middleware.tests'
+import * as middleware from '../middleware.tests'
 import db from "../../config/db";
 
 

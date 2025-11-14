@@ -1,5 +1,5 @@
 ﻿import request from "supertest";
-import {dbMock} from "../config/singleton";
+import {dbMock} from "./setup/jest.setup";
 import app from "../app";
 import * as jwt from "../utils/jwt.utils";
 import {Role} from "@prisma/client";

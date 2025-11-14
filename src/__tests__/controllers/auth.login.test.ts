@@ -4,7 +4,7 @@ import * as pwd from '../../utils/password.utils';
 import {dbMock} from "../setup/jest.setup";
 import app from "../../app";
 
-import * as middleware from '../../middleware/middleware.tests'
+import * as middleware from '../middleware.tests'
 
 
 const method = 'POST';

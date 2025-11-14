@@ -5,7 +5,7 @@ import app from "../../app";
 import db from "../../config/db";
 import {Role} from "@prisma/client";
 
-import * as middleware from '../../middleware/middleware.tests'
+import * as middleware from '../middleware.tests'
 import {Ban} from "../../controllers/admin.controller";
 import ms from "ms";
 
