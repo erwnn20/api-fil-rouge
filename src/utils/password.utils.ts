@@ -1,6 +1,6 @@
 ﻿import bcrypt from "bcrypt";
 
-const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
+export const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 export const hash = (password: string) => {
     checkOrThrow(password);
