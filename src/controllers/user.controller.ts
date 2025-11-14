@@ -139,6 +139,21 @@ export const createUser =
  *             format: email
  *             example: "john.doe@mail.com"
  *
+ *         - name: page
+ *           in: query
+ *           description: Selected page
+ *           required: false
+ *           schema:
+ *             type: integer
+ *             default: 1
+ *         - name: perPage
+ *           in: query
+ *           description: Number of users per page
+ *           required: false
+ *           schema:
+ *             type: integer
+ *             default: 5
+ *
  *       responses:
  *         200:
  *           description: Utilisateurs trouvés
@@ -257,29 +272,50 @@ export const getUsers =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
             const data = req.query;
-            const users: User[] = await db.user.findMany({
-                where: {
-                    id: req.params.id ? Number(req.params.id) : undefined,
-                    firstname: data.firstname as string | undefined,
-                    lastname: data.lastname as string | undefined,
-                    username: data.username as string | undefined,
-                    email: data.email as string | undefined,
-                },
-                omit: {
-                    password: true
-                }
-            });
 
-            return users.length > 0
+            const page: number = Number(data.page) || 1;
+            const limit: number = Number(data.perPage) || 5;
+            const offset = (page - 1) * limit;
+
+            const condition = {
+                id: req.params.id ? Number(req.params.id) : undefined,
+                firstname: data.firstname as string | undefined,
+                lastname: data.lastname as string | undefined,
+                username: data.username as string | undefined,
+                email: data.email as string | undefined,
+            }
+
+            const [users, total]: [User[], number] = await db.$transaction([
+                db.user.findMany({
+                    skip: offset,
+                    take: limit,
+                    where: condition,
+                    omit: {
+                        password: true
+                    }
+                }),
+                db.user.count({where: condition}),
+            ]);
+
+            const paginate = {
+                page,
+                perPage: limit,
+                currentStartIndex: offset + 1,
+                count: users.length,
+                total,
+                data: users,
+            }
+
+            return paginate.count > 0
                 ? res.status(200)
                     .json({
-                        message: `${users.length} users found`,
-                        users, count: users.length,
+                        message: `${paginate.count} users found`,
+                        paginate,
                     })
                 : res.status(204)
                     .json({
                         message: 'No user found',
-                        users, count: users.length,
+                        paginate,
                     });
         } catch (error) {
             next(error);
