@@ -99,6 +99,7 @@ export const ban =
                 select: {
                     user: {
                         select: {
+                            id: true,
                             firstname: true,
                             lastname: true,
                             email: true,
@@ -111,6 +112,10 @@ export const ban =
                     reason: true,
                 },
             });
+
+            await db.jwtRefreshToken.deleteMany({
+                where: {userId: ban.user.id}
+            })
 
             res.status(201)
                 .json({
