@@ -91,6 +91,14 @@ export const createUser =
                     message: `User \`${user.username}\` created successfully`, user,
                 });
         } catch (error) {
+            if (error instanceof pwd.PasswordError)
+                return res.status(400).json({
+                    error: {
+                        name: error.name,
+                        details: error.errors
+                    }
+                });
+
             next(error);
         }
     };

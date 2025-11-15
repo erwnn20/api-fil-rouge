@@ -124,6 +124,14 @@ export const register =
                     accessToken: tokens.access,
                 });
         } catch (error) {
+            if (error instanceof pwd.PasswordError)
+                return res.status(400).json({
+                    error: {
+                        name: error.name,
+                        details: error.errors
+                    }
+                });
+
             next(error);
         }
     };
