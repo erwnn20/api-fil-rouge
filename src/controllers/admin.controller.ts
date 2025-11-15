@@ -83,7 +83,9 @@ export const ban =
                         connect: {username: data.username}
                     },
                     admin: {
-                        connect: {username: data.adminName}
+                        connect: data.adminName
+                            ? {username: data.adminName}
+                            : {id: (req as any).user.id}
                     },
                     startAt: data.startAt,
                     endAt: data.duration
