@@ -97,4 +97,6 @@ export const refresh = async (refreshToken: Token): Promise<Tokens> => {
  * Verifies an access token
  */
 export const verify =
-    (accessTokens: Token) => jwt.verify(accessTokens, JWT_ACCESS_SECRET);
+    (tokens: Token, key: TokenKeys = tokenDatas.access) => {
+        return jwt.verify(tokens, key.secret);
+    }
