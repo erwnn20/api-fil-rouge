@@ -8,11 +8,6 @@ import db from "../../config/db";
 describe('JWT Utils', () => {
     const fakeUser = {
         id: 100,
-        /*username: 'fakeUser',
-        email: 'fake.user@mail.com',
-        firstname: 'User',
-        lastname: 'Fake',
-        password: 'password',*/
     };
     const fakeTokens: jwToken.Tokens = {
         access: 'ACCESS_TOKEN',
@@ -33,13 +28,13 @@ describe('JWT Utils', () => {
 
             expect(jwt.sign).toHaveBeenCalledWith(
                 {id: fakeUser.id},
-                jwToken.JWT_ACCESS_SECRET,
-                {expiresIn: jwToken.JWT_ACCESS_EXPIRE}
+                jwToken.tokenDatas.access.secret,
+                {expiresIn: jwToken.tokenDatas.access.expiresIn},
             );
             expect(jwt.sign).toHaveBeenCalledWith(
                 {id: fakeUser.id},
-                jwToken.JWT_REFRESH_SECRET,
-                {expiresIn: jwToken.JWT_REFRESH_EXPIRE}
+                jwToken.tokenDatas.refresh.secret,
+                {expiresIn: jwToken.tokenDatas.refresh.expiresIn},
             );
 
             expect(tokens).toEqual({
@@ -112,7 +107,7 @@ describe('JWT Utils', () => {
 
             const result = jwToken.verify(fakeTokens.access);
 
-            expect(jwt.verify).toHaveBeenCalledWith(fakeTokens.access, jwToken.JWT_ACCESS_SECRET);
+            expect(jwt.verify).toHaveBeenCalledWith(fakeTokens.access, jwToken.tokenDatas.access.secret);
             expect(result).toEqual({ id: fakeUser.id });
         });
     });

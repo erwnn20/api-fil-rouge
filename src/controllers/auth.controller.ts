@@ -115,7 +115,7 @@ export const register =
                         httpOnly: true,
                         secure: true,
                         sameSite: 'strict',
-                        maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                        maxAge: ms(jwt.tokenDatas.refresh.expiresIn),
                     }
                 )
                 // .set('Authorization', tokens.access)
@@ -303,7 +303,7 @@ export const login =
                         httpOnly: true,
                         secure: true,
                         sameSite: 'strict',
-                        maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                        maxAge: ms(jwt.tokenDatas.refresh.expiresIn),
                     }
                 )
                 // .set('Authorization', tokens.access)
@@ -410,7 +410,7 @@ export const refresh =
                         httpOnly: true,
                         secure: true,
                         sameSite: 'strict',
-                        maxAge: ms(jwt.JWT_REFRESH_EXPIRE),
+                        maxAge: ms(jwt.tokenDatas.refresh.expiresIn),
                     }
                 )
                 .json({
