@@ -26,6 +26,8 @@ Cette application est une API REST développée en **Node.js**, **Express**, **T
 - Generer la base de donnée
 ```bash
   npx prisma generate
+```
+```bash
   npx prisma migrate dev
 ```
 
@@ -41,6 +43,8 @@ Cette application est une API REST développée en **Node.js**, **Express**, **T
 ### Mode production
 ```bash
   npm run build
+```
+```bash
   npm start
 ```
 
