@@ -1,8 +1,10 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
 import * as jwt from '../utils/jwt.utils';
+import * as usr from '../services/user.service';
 import * as pwd from '../utils/password.utils';
 import ms from "ms";
 import db from "../config/db";
+import {User} from "./user.controller";
 
 
 /**
@@ -83,27 +85,16 @@ import db from "../config/db";
 export const register =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data = req.body;
+            const data: usr.CreationRequest = req.body;
 
-            if ((await db.user.count({where: {email: data.email}})) > 0)
-                return res.status(401).json({error: 'Email already used'});
-            if ((await db.user.count({where: {username: data.username}})) > 0)
-                return res.status(401).json({error: 'Username already used'});
-
-            // create the user in the database
-            const user = await db.user.create({
-                data: {
-                    username: data.username,
-                    email: data.email,
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    password: pwd.hash(data.password),
-                },
-                select: {
-                    id: true,
-                    username: true,
-                }
-            });
+            const user: User = await usr.create(
+                data,
+                {
+                    select: {
+                        id: true,
+                        username: true,
+                    }
+                })
 
             const tokens = await jwt.generate(user.id);
 
@@ -124,6 +115,11 @@ export const register =
                     accessToken: tokens.access,
                 });
         } catch (error) {
+            if (error instanceof usr.CreationError)
+                return res.status(400).json({
+                    error: error.message
+                });
+
             if (error instanceof pwd.PasswordError)
                 return res.status(400).json({
                     error: {

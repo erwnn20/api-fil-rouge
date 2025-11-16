@@ -1,4 +1,5 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
+import * as usr from '../services/user.service';
 import * as pwd from "../utils/password.utils";
 import db from "../config/db";
 import {Role, User as PrismaUser} from "@prisma/client";
@@ -72,25 +73,20 @@ export type User = Omit<PrismaUser, "password">;
 export const createUser =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data = req.body;
-            const user: User = await db.user.create({
-                data: {
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    username: data.username,
-                    email: data.email,
-                    password: pwd.hash(data.password),
-                },
-                omit: {
-                    password: true
-                }
-            });
+            const data: usr.CreationRequest = req.body;
+
+            const user: User = await usr.create(data, {omit: {password: true}})
 
             res.status(201)
                 .json({
                     message: `User \`${user.username}\` created successfully`, user,
                 });
         } catch (error) {
+            if (error instanceof usr.CreationError)
+                return res.status(400).json({
+                    error: error.message
+                });
+
             if (error instanceof pwd.PasswordError)
                 return res.status(400).json({
                     error: {
