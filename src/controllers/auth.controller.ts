@@ -1,5 +1,6 @@
 ﻿import type {Request, Response, NextFunction} from 'express';
 import * as jwt from '../utils/jwt.utils';
+import * as auth from '../services/auth.service';
 import * as usr from '../services/user.service';
 import * as pwd from '../utils/password.utils';
 import ms from "ms";
@@ -85,7 +86,7 @@ import {User} from "./user.controller";
 export const register =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data: usr.CreationRequest = req.body;
+            const data: auth.RegisterRequest = req.body;
 
             const user: User = await usr.create(
                 data,
@@ -238,13 +239,13 @@ export const register =
 export const login =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
+            const data: auth.LoginRequest = req.body;
             const now = new Date();
-            const {login, password} = req.body;
 
             // finds all users with matching credentials
             const users = await db.user.findMany({
                 where: {
-                    OR: [{username: login}, {email: login}],
+                    OR: [{username: data.login}, {email: data.login}],
                 },
                 // select the data retrieved from the db
                 select: {
@@ -279,7 +280,7 @@ export const login =
                     });
             const user = users[0];
 
-            const match = pwd.compare(password, user.password);
+            const match = pwd.compare(data.password, user.password);
             if (!match) return res.status(401).json({error: 'Invalid password'});
 
             // check if the user is banned
