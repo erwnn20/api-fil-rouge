@@ -17,6 +17,12 @@ Cette application est une API REST développée en **Node.js**, **Express**, **T
   npm install
 ```
 
+- Copier le fichier `.env.example` en `.env` :
+```bash
+  cp .env.example .env
+```
+> Y definir les valeurs manquantes
+
 - Generer la base de donnée
 ```bash
   npx prisma generate
