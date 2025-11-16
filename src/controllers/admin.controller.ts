@@ -1,4 +1,5 @@
 ﻿import {NextFunction, Request, Response} from "express";
+import * as adm from "../services/admin.service"
 import db from "../config/db";
 import ms from "ms";
 
@@ -73,8 +74,7 @@ export interface Ban {
 export const ban =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data: Ban = req.body;
-            data.startAt = new Date(data.startAt ?? Date.now()); // sets the date at runtime if no 'startAt' date specified
+            const data: adm.BanRequest = req.body;
 
             // create the ban in the db
             const ban = await db.ban.create({
@@ -89,11 +89,7 @@ export const ban =
                     },
                     startAt: data.startAt,
                     endAt: data.duration
-                        ? new Date(
-                            data.startAt.getTime()
-                            + (typeof data.duration === "number"
-                                ? data.duration
-                                : ms(data.duration)))
+                        ? new Date(Date.parse(data.startAt) + data.duration)
                         : undefined,
                     reason: data.reason,
                 },
@@ -169,7 +165,7 @@ export const ban =
 export const unban =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data: Ban = req.body;
+            const data: adm.UnBanRequest = req.body;
             const now = new Date();
 
             // set all the endAt of actives bans of the selected user to now
