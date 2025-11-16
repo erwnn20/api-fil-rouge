@@ -14,8 +14,7 @@ export const CreationRequestSchema = z.object({
         .min(1, 'Lastname is required')
         .trim(),
     password: z.string('Password is required')
-        .min(1, 'Password is required')
-        .trim(),
+        .min(1, 'Password is required'),
 });
 export type CreationRequest = z.infer<typeof CreationRequestSchema>;
 
@@ -64,3 +63,7 @@ export const create = async (
         ...options
     }));
 }
+
+export const EditionRequestSchema = CreationRequestSchema
+    .omit({password: true}).partial().strict();
+export type EditionRequest = z.infer<typeof EditionRequestSchema>;

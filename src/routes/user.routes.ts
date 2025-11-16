@@ -10,14 +10,31 @@ import * as usr from "../services/user.service";
  */
 const userRoutes = Router();
 
-userRoutes.get('/', mwAuth.auth, getUsers);
-userRoutes.get('/:id', mwAuth.auth, getUsers);
-userRoutes.post('/', [
+userRoutes.get('/',
+    mwAuth.auth,
+    getUsers
+);
+userRoutes.get('/:id',
+    mwAuth.auth,
+    getUsers
+);
+userRoutes.post('/',
     mwAuth.auth,
     mwRole.required("ADMIN"),
-    mwZ.validateBody(usr.CreationRequestSchema)
-], createUser);
-userRoutes.put('/:id', mwAuth.auth, mwRole.required("ADMIN"), updateUser);
-userRoutes.delete('/:id', mwAuth.auth, mwRole.required("ADMIN"), deleteUser);
+    mwZ.validateBody(usr.CreationRequestSchema),
+    createUser
+);
+userRoutes.put('/:id',
+    mwAuth.auth,
+    mwRole.required("ADMIN"),
+    mwZ.validateBody(usr.EditionRequestSchema),
+    updateUser
+);
+userRoutes.delete('/:id',
+    mwAuth.auth,
+    mwRole.required("ADMIN"),
+    // mwZ.validateBody(usr.),
+    deleteUser
+);
 
 export default userRoutes;

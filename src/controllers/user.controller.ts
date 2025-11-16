@@ -357,17 +357,12 @@ export const getUsers =
 export const updateUser =
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const data = req.body;
+            const data: usr.EditionRequest = req.body;
             const user: User = await db.user.update({
                 where: {
                     id: req.params.id ? Number(req.params.id) : undefined,
                 },
-                data: {
-                    firstname: data.firstname,
-                    lastname: data.lastname,
-                    username: data.username,
-                    email: data.email,
-                },
+                data: data,
                 omit: {
                     password: true
                 }
@@ -375,13 +370,9 @@ export const updateUser =
 
             res.status(200)
                 .json({
-                    message: `User \`${user.username}\` updated successfully`, user,
-                    updated: {
-                        firstname: data.firstname,
-                        lastname: data.lastname,
-                        username: data.username,
-                        email: data.email,
-                    },
+                    message: `User \`${user.username}\` updated successfully`,
+                    user,
+                    updated: data,
                 });
         } catch (error) {
             next(error);
