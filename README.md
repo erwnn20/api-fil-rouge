@@ -28,7 +28,7 @@ Cette application est une API REST développée en **Node.js**, **Express**, **T
   npx prisma generate
 ```
 ```bash
-  npx prisma migrate dev
+  npx prisma migrate dev --name init
 ```
 
 ---
