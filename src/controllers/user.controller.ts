@@ -1,4 +1,4 @@
-﻿import type {Request, Response, NextFunction} from 'express';
+﻿import type {NextFunction, Request, Response} from 'express';
 import * as usr from '../services/user.service';
 import * as pwd from "../utils/password.utils";
 import db from "../config/db";

@@ -4,7 +4,6 @@ import * as jwToken from '../../utils/jwt.utils';
 import db from "../../config/db";
 
 
-
 describe('JWT Utils', () => {
     const fakeUser = {
         id: 100,

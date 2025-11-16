@@ -1,4 +1,4 @@
-﻿import type {Request, Response, NextFunction} from 'express';
+﻿import type {NextFunction, Request, Response} from 'express';
 import * as jwt from '../utils/jwt.utils';
 import * as auth from '../services/auth.service';
 import * as usr from '../services/user.service';

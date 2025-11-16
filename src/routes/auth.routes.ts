@@ -1,5 +1,5 @@
 ﻿import {Router} from "express";
-import {register, login, logout, passwordReset, refresh} from "../controllers/auth.controller";
+import {login, logout, passwordReset, refresh, register} from "../controllers/auth.controller";
 import * as middleware from "../middleware/auth.middleware";
 import * as mwZ from "../middleware/zod.middleware";
 import * as auth from "../services/auth.service";
