@@ -19,7 +19,7 @@ export const auth = (route: string) => {
             .set('Authorization', 'Bearer invalidToken')
             .expect(401);
 
-        expect(res.body.error).toBe('Invalid token');
+        expect(res.body.error).toBe('Invalid access token');
     });
     it('[auth.middleware] should return 403 if logged user is banned', async () => {
         const fakeUser = {id: 100};

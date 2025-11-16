@@ -1,6 +1,7 @@
 ﻿import type {NextFunction, Request, Response} from "express";
 import * as jwt from '../utils/jwt.utils';
 import db from "../config/db";
+import ms from "ms";
 
 
 /**
@@ -20,11 +21,51 @@ export const auth =
             try {
                 (req as any).user = jwt.verify(accessToken);
             } catch (err: any) {
-                return res.status(401).json({
-                    error: err.name === 'TokenExpiredError'
-                        ? 'Token expired'
-                        : 'Invalid token',
-                });
+                if (err.name !== 'TokenExpiredError')
+                    return res.status(401).json({
+                        error: 'Invalid access token',
+                    });
+
+                const refreshToken: jwt.Token = req.cookies.refreshToken;
+
+                try {
+                    const user = jwt.verify(refreshToken, jwt.tokenDatas.refresh);
+
+                    const storedToken = await db.jwtRefreshToken.findUnique({
+                        where: {
+                            userId: (user as any).id,
+                            token: refreshToken,
+                        }
+                    });
+                    if (!storedToken)
+                        throw new Error("Invalid refresh token");
+
+                    (req as any).user = user;
+
+                    const tokens = await jwt.generate((req as any).user.id);
+
+                    res.cookie('refreshToken', tokens.refresh, {
+                        httpOnly: true,
+                        secure: true,
+                        sameSite: 'strict',
+                        maxAge: ms(jwt.tokenDatas.refresh.expiresIn),
+                    })
+
+                    const originalJson = res.json.bind(res);
+                    res.json = (data) => {
+                        data = {
+                            ...data,
+                            tokenMessage: 'tokens refreshed via refresh token',
+                            accessToken: tokens.access,
+                        };
+
+                        return originalJson(data);
+                    };
+                } catch (e) {
+                    return res.status(401).json({
+                        error: 'Invalid tokens',
+                    });
+                }
             }
 
             const now = new Date();
