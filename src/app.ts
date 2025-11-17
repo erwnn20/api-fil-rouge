@@ -4,6 +4,7 @@ import swaggerUi from "swagger-ui-express";
 import AuthRoutes from "./routes/auth.routes";
 import UserRoutes from "./routes/user.routes";
 import AdminRoutes from "./routes/admin.routes";
+import ApiRoutes from "./routes/api.routes";
 import {specs} from "./config/swagger";
 
 
@@ -17,6 +18,7 @@ app.use('/auth', AuthRoutes);
 app.use('/admin', AdminRoutes);
 
 app.use('/api/v1/users', UserRoutes);
+app.use('/api/v2/posts', ApiRoutes);
 
 // Route for Swagger
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(specs));
